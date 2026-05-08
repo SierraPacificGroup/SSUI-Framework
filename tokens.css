@@ -15,6 +15,14 @@
   --ss-duplex:#A78BFA;
   --ss-duplex-dim:rgba(167,139,250,.1);
 
+  /* AI accent — every AI-triggering button + AI-emitted artifact uses
+     this purple so AI surfaces are visually distinct from data CRUD.
+     Sits about Tailwind violet-600 — deep enough to read with weight on
+     dark surfaces but still unambiguously purple. */
+  --ss-ai:#7C3AED;
+  --ss-ai-dim:rgba(124,58,237,.14);
+  --ss-ai-glow:rgba(124,58,237,.4);
+
   /* Surfaces */
   --ss-bg:#0B1623;
   --ss-surface:#0F1E30;
