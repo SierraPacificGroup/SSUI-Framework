@@ -59,4 +59,10 @@
   --ss-tone-orange:#c2410c;
   --ss-tone-orange-bg:rgba(194,65,12,.12);
   --ss-tone-orange-border:rgba(194,65,12,.35);
+
+  /* Light-theme attention — slightly deeper magenta for legibility on
+     light surfaces; bg/border alphas matched to the dark-theme rule. */
+  --ss-attention:#db2777;
+  --ss-attention-bg:rgba(219,39,119,.10);
+  --ss-attention-border:rgba(219,39,119,.40);
 }

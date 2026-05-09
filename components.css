@@ -78,6 +78,14 @@ body{margin:0}
 .ss-severity-pill.is-advisory{color:var(--ss-advisory);background:var(--ss-advisory-bg);border-color:var(--ss-advisory-border)}
 .ss-severity-pill.is-info{color:var(--ss-info);background:var(--ss-info-bg);border-color:var(--ss-info-border)}
 .ss-severity-pill.is-success{color:var(--ss-success);background:var(--ss-success-bg);border-color:var(--ss-success-border)}
+.ss-severity-pill.is-attention{color:var(--ss-attention);background:var(--ss-attention-bg);border-color:var(--ss-attention-border)}
+/* Outline-only "ghost" variant — same hue/severity, transparent fill,
+ * dashed border, hollow dot. Use when two pills of the same severity
+ * appear together and one needs to read as secondary (e.g. a
+ * rule-Severity pill alongside an audit-Result pill of the same
+ * color). */
+.ss-severity-pill.is-ghost{background:transparent !important;border-style:dashed;font-weight:600;letter-spacing:.04em}
+.ss-severity-pill.is-ghost::before{background:transparent;border:1px solid currentColor;width:.45rem;height:.45rem}
 .ss-color-picker{width:36px;height:36px;border-radius:8px;border:1px solid var(--ss-border);padding:0;background:transparent}
 .ss-color-swatch{width:18px;height:18px;border-radius:6px;border:1px solid rgba(15,30,48,.2);display:inline-block}
 .ss-check-inline{display:inline-flex;align-items:center;gap:10px;white-space:nowrap}
@@ -355,9 +363,24 @@ body{margin:0}
   .ss-nav-group.is-open .ss-nav-sub{display:flex}
 }
 
-/* Modal */
+/* Modal
+ * Two integration patterns are supported:
+ *   1) Vanilla-JS pattern (components.js): toggle classes
+ *      open  → add .is-open
+ *      close → add .is-closing (keeping .is-open) → wait 220ms → remove both
+ *   2) React/framework pattern: replace classes
+ *      open  → .is-open
+ *      close → .is-closing (drop .is-open)
+ *
+ *  Pattern 2 was previously broken because removing .is-open hit the
+ *  base .ss-modal{opacity:0} rule with no transition, so the wrapper
+ *  vanished in one frame and children never got a chance to fade out.
+ *  The .ss-modal.is-closing rule below keeps the wrapper opaque while
+ *  the close-out transitions on the panel + backdrop play, supporting
+ *  both patterns. */
 .ss-modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:1250;opacity:0;pointer-events:none}
 .ss-modal.is-open{opacity:1;pointer-events:auto}
+.ss-modal.is-closing{opacity:1;pointer-events:none}
 .ss-modal-backdrop{position:absolute;inset:0;background:rgba(10,18,28,.55);backdrop-filter:blur(2px);opacity:0;transition:opacity .2s ease}
 .ss-modal.is-open .ss-modal-backdrop{opacity:1}
 .ss-modal-panel{position:relative;z-index:1;max-width:900px;width:min(900px,92vw);max-height:88vh;overflow:hidden;background:var(--ss-surface);border:1px solid var(--ss-border);border-radius:14px;box-shadow:var(--ss-shadow-1);opacity:0;transform:translateY(10px) scale(.98);transition:opacity .22s ease, transform .22s ease}

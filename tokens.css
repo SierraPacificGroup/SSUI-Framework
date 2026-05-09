@@ -83,4 +83,13 @@
   --ss-tone-orange:#ea580c;
   --ss-tone-orange-bg:rgba(234,88,12,.12);
   --ss-tone-orange-border:rgba(234,88,12,.35);
+
+  /* "Attention" severity — magenta accent used for soft-warn signals
+     that deserve visibility but aren't a hard error (e.g. mismatch
+     count pills, advisory flags, count badges that warrant a glance).
+     Distinct from --ss-warn (amber, harder warning) and --ss-critical
+     (red, hard error). */
+  --ss-attention:#ec4899;
+  --ss-attention-bg:rgba(236,72,153,.10);
+  --ss-attention-border:rgba(236,72,153,.40);
 }
