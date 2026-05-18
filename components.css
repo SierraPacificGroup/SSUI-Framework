@@ -181,6 +181,15 @@ body{margin:0}
     100%{box-shadow:0 0 0 0 rgba(248,113,113,.15);}
 }
 
+/* Generic opacity pulse — used by the bell icon's "active jobs"
+   indicator dot in AppHeader. Subtler than ss-pulse-alert because
+   it's a tiny 8px dot, not a card-level callout. */
+@keyframes ss-pulse{
+    0%{opacity:.55;}
+    50%{opacity:1;}
+    100%{opacity:.55;}
+}
+
 /* Tabs */
 .ss-tabs{max-width:var(--ss-content-max);margin:2.5rem auto 0;padding:0 2rem}
 .ss-tabs-header{text-align:center;margin-bottom:1.5rem}
@@ -597,6 +606,210 @@ body{margin:0}
 .ss-step{display:none}
 .ss-step.is-active{display:block}
 .ss-step-actions{display:flex;gap:.6rem}
+
+/* ─── Instance bar ──────────────────────────────────────────────────
+   Top-of-page strip that surfaces module-scoped stats + actions.
+   Used by every audit/data module's first zone above the tabs
+   (work-roles, service-sla, agreement-config, additions-manager,
+   etc.). Render as a flex row: stat blocks on the left, action
+   buttons (sync, drawer) on the right.
+
+   Markup:
+     <div class="ss-instance-bar">
+       <div class="ss-instance-stats">
+         <div class="ss-stat-block">
+           <div class="ss-stat-block-label">Companies</div>
+           <div class="ss-stat-block-value">221</div>
+         </div>
+       </div>
+       <div class="ss-instance-actions">…</div>
+     </div>                                                           */
+.ss-instance-bar{
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:.75rem 1.25rem;margin-bottom:1rem;
+  background:var(--ss-surface);border:1px solid var(--ss-border);
+  border-radius:var(--ss-r-10);
+}
+.ss-instance-stats{display:flex;align-items:center;gap:2rem;flex-wrap:wrap}
+.ss-instance-actions{display:flex;align-items:center;gap:.6rem}
+
+.ss-stat-block{display:flex;flex-direction:column;gap:.25rem}
+.ss-stat-block-label{
+  font-size:.7rem;font-weight:600;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ss-text-dim);
+}
+.ss-stat-block-value{font-size:1.1rem;font-weight:700;color:var(--ss-text)}
+.ss-stat-block-value.is-green{color:var(--ss-green)}
+.ss-stat-block-value.is-red{color:var(--ss-critical)}
+.ss-stat-block-value.is-amber{color:var(--ss-warn)}
+
+/* ─── Filter bar ────────────────────────────────────────────────────
+   Horizontal strip rendered above data tables for narrowing the
+   row set. Used canonically on the Companies, Contacts, and
+   Additions-Manager pages. Anatomy left → right:
+
+     [base pill] [base pill] [base pill] | [filter-select] [filter-select] |  Showing X of Y · Clear
+
+   Markup:
+     <div class="ss-filter-bar">
+       <button class="ss-filter-pill is-active">…</button>
+       <button class="ss-filter-pill">…</button>
+       <span class="ss-filter-divider"></span>
+       <label class="ss-filter-select"> …<select>…</select></label>
+       <div class="ss-filter-summary">…</div>
+     </div>                                                           */
+.ss-filter-bar{
+  display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;
+  padding:.75rem 1rem;
+  background:var(--ss-surface2);
+  border-bottom:1px solid var(--ss-border);
+}
+.ss-filter-divider{
+  width:1px;height:20px;background:var(--ss-border);margin:0 .15rem;
+}
+
+/* Filter pills — base (mutually-exclusive) and toggle (independent).
+   Pills inherit the brand green for the active state; pass a custom
+   accent via CSS variable when a different tone is needed (e.g. red
+   for a "Cancelled" base pill). */
+.ss-filter-pill{
+  --ss-pill-accent:var(--ss-green);
+  padding:.3rem .7rem;font-size:.75rem;font-weight:600;
+  background:var(--ss-surface2);
+  color:var(--ss-text-dim);
+  border:1px solid var(--ss-border);border-radius:6px;
+  cursor:pointer;line-height:1;
+}
+.ss-filter-pill:hover{color:var(--ss-text)}
+.ss-filter-pill.is-active{
+  background:var(--ss-pill-accent);
+  color:#fff;
+  border-color:var(--ss-pill-accent);
+}
+.ss-filter-pill .ss-filter-pill-count{opacity:.75;margin-left:.25rem}
+/* Accent variants — override the --ss-pill-accent var instead of
+   restyling the pill from scratch. Add new ones the same way. */
+.ss-filter-pill.is-success{--ss-pill-accent:var(--ss-success)}
+.ss-filter-pill.is-warn{--ss-pill-accent:var(--ss-warn)}
+.ss-filter-pill.is-critical{--ss-pill-accent:var(--ss-critical)}
+.ss-filter-pill.is-neutral{--ss-pill-accent:var(--ss-neutral)}
+.ss-filter-pill.is-info{--ss-pill-accent:var(--ss-info)}
+
+/* Filter select — labeled dropdown that highlights when a value is
+   chosen. The "set" state uses brand green tinting for parity with
+   the active filter pill; consumers can override via the accent var. */
+.ss-filter-select{
+  --ss-fs-accent:var(--ss-green);
+  display:inline-flex;align-items:center;gap:.4rem;
+  font-size:.72rem;color:var(--ss-text-dim);
+}
+.ss-filter-select-label{font-weight:600}
+.ss-filter-select select{
+  padding:.28rem .55rem;font-size:.75rem;font-weight:600;
+  background:var(--ss-surface);color:var(--ss-text);
+  border:1px solid var(--ss-border);border-radius:6px;
+  outline:none;cursor:pointer;font-family:inherit;
+}
+.ss-filter-select.is-set select{
+  background:var(--ss-success-bg);
+  color:var(--ss-fs-accent);
+  border-color:var(--ss-success-border);
+}
+
+/* Filter summary — right-aligned "Showing X of Y" + clear button.
+   Pushed to the far right via margin-left:auto on the wrap so
+   intervening filter cells flow naturally. */
+.ss-filter-summary{
+  margin-left:auto;display:flex;align-items:center;gap:.5rem;
+  font-size:.72rem;color:var(--ss-text-dim);
+}
+.ss-filter-summary-clear{
+  padding:.3rem .7rem;font-size:.72rem;font-weight:600;
+  background:transparent;color:var(--ss-text);
+  border:1px solid var(--ss-border);border-radius:6px;cursor:pointer;
+}
+.ss-filter-summary-clear:hover{border-color:var(--ss-green);color:var(--ss-green)}
+
+/* ─── Step pills (wizard stepper) ───────────────────────────────────
+   Modernized stepper used by the Additions Manager wizard — labeled
+   pills connected by separators, with three visual states:
+     - is-pending    greyed, not clickable
+     - is-active     filled green disc + highlighted pill
+     - is-completed  check disc + clickable to revisit
+
+   Markup:
+     <nav class="ss-step-pills">
+       <button class="ss-step-pill is-completed">
+         <span class="ss-step-pill-disc">✓</span><span>Companies</span>
+       </button>
+       <span class="ss-step-pill-sep"></span>
+       <button class="ss-step-pill is-active">
+         <span class="ss-step-pill-disc">2</span><span>Agreements</span>
+       </button>
+       …
+     </nav>                                                            */
+.ss-step-pills{
+  display:flex;align-items:center;justify-content:center;
+  gap:.5rem;padding:1.25rem 0;flex-wrap:wrap;margin-bottom:.5rem;
+}
+.ss-step-pill{
+  display:inline-flex;align-items:center;gap:.55rem;
+  padding:.45rem .95rem;border-radius:999px;
+  background:var(--ss-surface2);
+  color:var(--ss-text-dim);
+  border:1px solid var(--ss-border);
+  font-size:.85rem;font-weight:600;font-family:inherit;
+  cursor:default;transition:all .12s ease;
+}
+.ss-step-pill-disc{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:1.5rem;height:1.5rem;border-radius:50%;
+  background:var(--ss-surface3);color:var(--ss-text);
+  border:1px solid var(--ss-border);
+  font-size:.78rem;font-weight:700;
+}
+.ss-step-pill-sep{
+  display:inline-block;width:1.6rem;height:1px;background:var(--ss-border);
+}
+.ss-step-pill.is-active{
+  background:var(--ss-success-bg);color:var(--ss-text);
+  border-color:var(--ss-success-border);
+}
+.ss-step-pill.is-active .ss-step-pill-disc{
+  background:var(--ss-green);color:#fff;border-color:var(--ss-green);
+}
+.ss-step-pill.is-completed{
+  background:var(--ss-surface2);color:var(--ss-text);
+  border-color:var(--ss-success-border);cursor:pointer;
+}
+.ss-step-pill.is-completed .ss-step-pill-disc{
+  background:var(--ss-success-bg);color:var(--ss-green);
+  border-color:var(--ss-success-border);
+}
+.ss-step-pill.is-pending{opacity:.55}
+
+/* ─── Step action strip ─────────────────────────────────────────────
+   Back / Continue action row rendered at the top of each wizard
+   step. Plain block (not sticky) so it scrolls with the page; the
+   stepper above it acts as the visual anchor.
+
+   Markup:
+     <div class="ss-step-strip">
+       <span class="ss-step-strip-hint">3 of 5 selected</span>
+       <div class="ss-step-strip-actions">
+         <button class="ss-btn">← Back</button>
+         <button class="ss-btn primary">Continue →</button>
+       </div>
+     </div>                                                           */
+.ss-step-strip{
+  display:flex;justify-content:space-between;align-items:center;gap:1rem;
+  padding:.75rem 1.25rem;margin-bottom:1rem;
+  background:var(--ss-surface);
+  border:1px solid var(--ss-border);
+  border-radius:var(--ss-r-12);
+}
+.ss-step-strip-hint{color:var(--ss-text-dim);font-size:.85rem}
+.ss-step-strip-actions{display:flex;gap:.6rem}
 
 /* Command Palette */
 .ss-command{position:fixed;inset:0;z-index:1300;display:grid;place-items:start center;padding-top:8vh;pointer-events:none;opacity:0}

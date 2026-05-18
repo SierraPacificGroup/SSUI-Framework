@@ -11,7 +11,7 @@ A lightweight, dependency-free CSS + JS component framework for integration-styl
 - **Two themes** — `tokens.css` (dark, default) and `tokens.light.css`, switchable at runtime via `SSUI.setTheme()`
 - **Plus Jakarta Sans** typography, 8/10/12 px radius scale, one elevation shadow
 - **Severity + tone token palette** wired into status pills, severity pills, staged pills, and alerts
-- **Components:** header/nav, hero, breadcrumbs, flow diagram, cards, tabs, tables (sortable + fully-featured data table with bulk select, column toggles, pagination, server mode), forms (inputs, select, textarea, radio, check, transfer list, combobox, upload), drawer, modal, confirm, popover, tooltip, toast, alert, accordion, stepper, command palette, charts (bar, line, pie), gauge, progress bar, skeleton, empty state, loading spinner (ring + bouncing dots)
+- **Components:** header/nav, hero, breadcrumbs, instance bar (stat blocks + actions), filter bar (base pills + selects + summary), flow diagram, cards, tabs, tables (sortable + fully-featured data table with bulk select, column toggles, pagination, server mode), forms (inputs, select, textarea, radio, check, transfer list, combobox, upload), drawer, modal, confirm, popover, tooltip, toast, alert, accordion, stepper (minimal + labeled-pill wizard variants), step-action strip, command palette, charts (bar, line, pie), gauge, progress bar, skeleton, empty state, loading spinner (ring + bouncing dots)
 
 ## Installation
 
@@ -313,6 +313,65 @@ Opens on `Cmd/Ctrl + K` or via `SSUI.openCommandPalette()`.
 ---
 
 ## Data display
+
+### Instance bar
+
+Top-of-page strip that surfaces module-scoped stats + actions. Render as a flex row — stat blocks on the left, action buttons on the right (sync button, drawer trigger, etc.).
+
+```html
+<div class="ss-instance-bar">
+  <div class="ss-instance-stats">
+    <div class="ss-stat-block">
+      <div class="ss-stat-block-label">Companies</div>
+      <div class="ss-stat-block-value">221</div>
+    </div>
+    <div class="ss-stat-block">
+      <div class="ss-stat-block-label">Δ Revenue / cycle</div>
+      <div class="ss-stat-block-value is-green">$300.00</div>
+    </div>
+  </div>
+  <div class="ss-instance-actions">
+    <button class="ss-btn ghost">📥 Export</button>
+    <button class="ss-btn primary">⟳ Sync from CW</button>
+  </div>
+</div>
+```
+
+`.ss-stat-block-value` accepts `.is-green` / `.is-red` / `.is-amber` for severity-tinted values (deltas, KPIs, etc.).
+
+### Filter bar
+
+Horizontal strip rendered above data tables for narrowing rows. Used canonically on every module's "browse the cached rows" tab. Anatomy left-to-right: mutually-exclusive base pills → divider → labeled filter dropdowns → right-aligned summary with a Clear button.
+
+```html
+<div class="ss-filter-bar">
+  <button class="ss-filter-pill is-active is-success">
+    Active <span class="ss-filter-pill-count">(214)</span>
+  </button>
+  <button class="ss-filter-pill is-neutral">Inactive <span class="ss-filter-pill-count">(7)</span></button>
+  <button class="ss-filter-pill">All</button>
+
+  <span class="ss-filter-divider"></span>
+
+  <label class="ss-filter-select is-set">
+    <span class="ss-filter-select-label">Status:</span>
+    <select><option>Active</option></select>
+  </label>
+  <label class="ss-filter-select">
+    <span class="ss-filter-select-label">Type:</span>
+    <select><option>All</option></select>
+  </label>
+
+  <div class="ss-filter-summary">
+    Showing 42 of 221
+    <button class="ss-filter-summary-clear">Clear filters</button>
+  </div>
+</div>
+```
+
+- `.ss-filter-pill` — base pill. Add `.is-active` to mark the current selection. Override the active accent via the local CSS var `--ss-pill-accent` or use one of the canned modifiers: `.is-success`, `.is-warn`, `.is-critical`, `.is-neutral`, `.is-info`.
+- `.ss-filter-select` — labeled dropdown. Add `.is-set` when a non-empty value is chosen and the select tints green.
+- `.ss-filter-summary` auto-margins to the far right of the bar so the rest of the cells stay packed left.
 
 ### Buttons
 
@@ -695,6 +754,10 @@ Toggle via `SSUI.setEmptyState(wrap, isEmpty)` and `SSUI.setSkeletonLoading(wrap
 
 ![Stepper](images/stepper.png)
 
+SSUI ships two stepper variants — pick the one that matches your interaction model.
+
+**Minimal stepper (`.ss-stepper`)** — discs only, no labels, JS-driven step swapping via `data-ss-step-*` attributes. Best for tight progress indicators inside modals.
+
 ```html
 <div class="ss-stepper" data-ss-stepper data-ss-step-index="0">
   <div class="ss-stepper-dots">
@@ -710,6 +773,38 @@ Toggle via `SSUI.setEmptyState(wrap, isEmpty)` and `SSUI.setSkeletonLoading(wrap
   </div>
 </div>
 ```
+
+**Labeled step-pills (`.ss-step-pills`)** — full-page wizards (Additions Manager pattern): numbered pills with labels, dividers between them, and three states the host wires up: `is-active` (current step), `is-completed` (✓ check, clickable to revisit), `is-pending` (greyed, not clickable). Pure CSS — no `data-ss-*` automation, the host React/JS owns state.
+
+```html
+<nav class="ss-step-pills">
+  <button class="ss-step-pill is-completed">
+    <span class="ss-step-pill-disc">✓</span><span>Companies</span>
+  </button>
+  <span class="ss-step-pill-sep"></span>
+  <button class="ss-step-pill is-completed">
+    <span class="ss-step-pill-disc">✓</span><span>Agreements</span>
+  </button>
+  <span class="ss-step-pill-sep"></span>
+  <button class="ss-step-pill is-active">
+    <span class="ss-step-pill-disc">3</span><span>Additions</span>
+  </button>
+  <span class="ss-step-pill-sep"></span>
+  <button class="ss-step-pill is-pending" disabled>
+    <span class="ss-step-pill-disc">4</span><span>Strategy</span>
+  </button>
+</nav>
+
+<div class="ss-step-strip">
+  <span class="ss-step-strip-hint">3 of 142 additions selected</span>
+  <div class="ss-step-strip-actions">
+    <button class="ss-btn ghost">← Back</button>
+    <button class="ss-btn primary">Continue →</button>
+  </div>
+</div>
+```
+
+`.ss-step-strip` is the Back/Continue action row that sits at the top of each step. Plain block (not sticky) so it scrolls with the page — the step-pills nav above it acts as the visual anchor.
 
 ## Charts and gauges
 

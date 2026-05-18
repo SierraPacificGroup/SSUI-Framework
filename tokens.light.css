@@ -11,6 +11,13 @@
   --ss-duplex:#7C5CFA;
   --ss-duplex-dim:rgba(124,92,250,.12);
 
+  /* AI accent — light-theme parity for the dark-theme --ss-ai token.
+     Same purple, slightly heavier alpha on the fill so it reads on
+     light surfaces. */
+  --ss-ai:#7C3AED;
+  --ss-ai-dim:rgba(124,58,237,.10);
+  --ss-ai-glow:rgba(124,58,237,.35);
+
   --ss-bg:#F6F8FB;
   --ss-surface:#FFFFFF;
   --ss-surface2:#F0F4F8;
