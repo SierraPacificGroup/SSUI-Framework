@@ -205,6 +205,19 @@ body{margin:0}
 .ss-tab-panel{display:none;border:1px solid var(--ss-border);border-top:1px solid var(--ss-surface2);border-radius:0 0 10px 10px;overflow:hidden;background:var(--ss-surface);padding-top:.75rem}
 .ss-tab-panel.active{display:block}
 
+/* Underline tab variant — matches the PSA Improvement / Workbench in-app pattern.
+   Flat horizontal row of tabs, bottom border on the bar, active tab gets a green
+   underline (overlapping the bar's bottom border via marginBottom:-2px). Children
+   can be <button> (client tabs) or <a> (SSR/Link-based tabs). Optional .count
+   pill renders right of the label. */
+.ss-tabs-underline{display:flex;gap:0;margin-bottom:1.25rem;border-bottom:2px solid var(--ss-border)}
+.ss-tabs-underline button,.ss-tabs-underline a{padding:.6rem 1.25rem;font-size:.82rem;font-weight:600;background:none;border:none;cursor:pointer;color:var(--ss-text-dim);border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .15s ease,border-color .15s ease;text-decoration:none;font-family:inherit;outline:none;white-space:nowrap;display:inline-flex;align-items:center;gap:.4rem}
+.ss-tabs-underline button:hover:not(.active),.ss-tabs-underline a:hover:not(.active){color:var(--ss-text)}
+.ss-tabs-underline button.active,.ss-tabs-underline a.active{color:var(--ss-green);border-bottom-color:var(--ss-green)}
+.ss-tabs-underline button:focus-visible,.ss-tabs-underline a:focus-visible{outline:2px solid var(--ss-green);outline-offset:-4px;border-radius:4px}
+.ss-tabs-underline .count{padding:.1rem .4rem;font-size:.68rem;font-weight:700;border-radius:10px;background:var(--ss-surface2);color:var(--ss-text-dim)}
+.ss-tabs-underline button.active .count,.ss-tabs-underline a.active .count{background:rgba(59,186,126,.12);color:var(--ss-green)}
+
 /* Tables */
 .ss-table,.ss-table-fixed{width:100%;border-collapse:collapse}
 .ss-table thead th,.ss-table-fixed thead th{font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ss-text-dim);padding:.7rem 1rem;text-align:left;background:var(--ss-surface2);border-bottom:1px solid var(--ss-border)}
