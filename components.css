@@ -318,6 +318,7 @@ body{margin:0}
 .ss-btn.is-loading::after{content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(0deg);height:16px;width:16px;border-radius:50%;border:3px solid rgba(255,255,255,.6);border-top-color:#fff;animation:ss-spin .8s linear infinite}
 .ss-btn.ghost.is-loading::after{border-color:rgba(15,30,48,.35);border-top-color:var(--ss-text)}
 @keyframes ss-spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes ss-rotate{to{transform:rotate(360deg)}}
 
 /* Profile dropdown */
 .ss-profile-menu{position:relative;display:inline-flex;align-items:center}
