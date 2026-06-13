@@ -839,3 +839,8 @@ body{margin:0}
   .ss-chart-grid,.ss-gauge-row{grid-template-columns:1fr}
   .ss-chart-bar-h-row{grid-template-columns:1fr}
 }
+
+/* Tooltip — styled hover/focus tooltip (portal-rendered, position:fixed).
+   Replaces the native browser title attribute. See components/ui/Tooltip.tsx */
+.ss-tooltip{position:fixed;z-index:2000;max-width:280px;padding:.5rem .65rem;background:var(--ss-surface2);color:var(--ss-text);border:1px solid var(--ss-border);border-radius:8px;box-shadow:var(--ss-shadow-1,0 10px 24px rgba(15,30,48,.18));font-size:.76rem;line-height:1.4;font-weight:500;pointer-events:none;animation:ss-tip-in .12s ease}
+@keyframes ss-tip-in{from{opacity:0}}
